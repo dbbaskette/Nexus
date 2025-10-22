@@ -2,6 +2,24 @@
 
 ## ✅ Resolved Issues
 
+### Testcontainers Not Starting Postgres
+**Status**: ✅ Fixed in latest commit
+
+**Problem**: Application failed with:
+```
+Connection to localhost:5432 refused
+Unable to determine Dialect without JDBC metadata
+```
+
+**Root Cause**: Running `mvn spring-boot:run` uses main application configuration, which expects Postgres at `localhost:5432`. Testcontainers configuration is in the test classpath.
+
+**Solution**: Use `mvn spring-boot:test-run` instead, which:
+- Runs `TestNexusApplication` with Testcontainers configuration
+- Automatically starts Postgres in Docker
+- Uses `@ServiceConnection` to configure datasource
+
+The `./run-local.sh` script now uses the correct goal and checks for Docker.
+
 ### Spring Boot 3.x Error Property Configuration
 **Status**: ✅ Fixed in latest commit
 
