@@ -34,11 +34,13 @@
         <springdoc-openapi.version>2.6.0</springdoc-openapi.version>
         <testcontainers.version>1.20.4</testcontainers.version>
         <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
+        <jjwt.version>0.12.6</jjwt.version>
 
         <!-- Frontend -->
         <frontend-maven-plugin.version>1.15.1</frontend-maven-plugin.version>
         <node.version>v20.11.0</node.version>
         <npm.version>10.2.4</npm.version>
+        <skip.ui>false</skip.ui>
     </properties>
 
     <dependencyManagement>
@@ -149,6 +151,27 @@
             <artifactId>opentelemetry-exporter-otlp</artifactId>
         </dependency>
 
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- Structured Logging -->
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -224,6 +247,7 @@
                 <configuration>
                     <workingDirectory>ui</workingDirectory>
                     <installDirectory>target</installDirectory>
+                    <skip>${skip.ui}</skip>
                 </configuration>
                 <executions>
                     <execution>
