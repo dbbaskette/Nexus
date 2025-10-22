@@ -3,28 +3,25 @@ package com.baskettecase.nexus.config;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 /**
  * Security configuration for Nexus Gateway.
  * <p>
- * Configures JWT-based authentication, CORS, CSRF protection, and endpoint security.
+ * Configures JWT-based authentication, CORS, CSRF protection, and endpoint security for WebFlux.
  * </p>
  */
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 @EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityConfig {
 
@@ -35,15 +32,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable) // Disabled for stateless JWT auth
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
+                .csrf(ServerHttpSecurity.CsrfSpec::disable) // Disabled for stateless JWT auth
+                .authorizeExchange(auth -> auth
                         // Public endpoints
-                        .requestMatchers(
+                        .pathMatchers(
                                 "/",
                                 "/index.html",
                                 "/assets/**",
@@ -52,16 +47,17 @@ public class SecurityConfig {
                                 "/actuator/health/**",
                                 "/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/webjars/**"
                         ).permitAll()
                         // Admin endpoints
-                        .requestMatchers("/actuator/**").hasRole("ADMIN")
+                        .pathMatchers("/actuator/**").hasRole("ADMIN")
                         // API endpoints require authentication
-                        .requestMatchers("/api/v1/**").authenticated()
+                        .pathMatchers("/api/v1/**").authenticated()
                         // MCP endpoints require authentication
-                        .requestMatchers("/mcp/**").authenticated()
+                        .pathMatchers("/mcp/**").authenticated()
                         // Default deny
-                        .anyRequest().authenticated()
+                        .anyExchange().authenticated()
                 );
 
         return http.build();
