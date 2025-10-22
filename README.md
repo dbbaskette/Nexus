@@ -13,7 +13,8 @@
 [Quick Start](#-quick-start) •
 [Architecture](#-architecture) •
 [Development](#-development) •
-[Deployment](#-deployment)
+[Deployment](#-deployment) •
+[Troubleshooting](KNOWN_ISSUES.md)
 
 </div>
 
@@ -67,9 +68,11 @@ Nexus MCP Gateway provides a centralized hub for connecting to multiple Model Co
 git clone https://github.com/dbbaskette/Nexus.git
 cd Nexus
 
-# Build the project
-mvn clean package
+# Build the project (skip UI to avoid npm registry issues)
+mvn clean package -Dskip.ui=true
 ```
+
+> 💡 **Tip**: The UI build requires network access to NPM. Use `-Dskip.ui=true` for backend-only development, or run `cd ui && npm run dev` for UI hot reload. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for more details.
 
 ### 2. Start MCP Fixture Servers
 
