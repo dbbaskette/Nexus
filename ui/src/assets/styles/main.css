@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-metal-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-metal-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-metal-500;
+  }
+}
+
+@layer components {
+  /* Glass morphism card */
+  .glass-card {
+    @apply backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-glass;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:bg-white/15 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  /* Metallic button */
+  .btn-metal {
+    @apply px-6 py-3 rounded-lg font-semibold text-white bg-gradient-to-br from-metal-500 to-metal-700;
+    @apply shadow-metal transition-all duration-300;
+    @apply hover:from-metal-400 hover:to-metal-600 hover:shadow-lg hover:-translate-y-0.5;
+    @apply active:translate-y-0 active:shadow-inner-metal;
+  }
+
+  .btn-metal-primary {
+    @apply btn-metal from-purple-500 to-indigo-700 hover:from-purple-400 hover:to-indigo-600;
+  }
+
+  /* Input with glass effect */
+  .input-glass {
+    @apply w-full px-4 py-3 rounded-lg backdrop-blur-xl bg-white/10 border border-white/20;
+    @apply text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50;
+    @apply transition-all duration-300;
+  }
+
+  /* Metallic gradient text */
+  .text-metal-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-gray-200 via-gray-400 to-gray-200;
+  }
+
+  /* Shimmer effect */
+  .shimmer {
+    @apply relative overflow-hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-full bg-shimmer;
+    animation: shimmer 2s infinite;
+  }
+}

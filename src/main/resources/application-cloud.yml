@@ -1,0 +1,54 @@
+spring:
+  # Cloud Foundry will auto-configure datasource from VCAP_SERVICES
+  # No manual datasource configuration needed
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+
+  # MCP Client Configuration
+  ai:
+    mcp:
+      client:
+        enabled: true
+        type: SYNC
+        request-timeout: 30s
+
+# Security - Production
+nexus:
+  security:
+    jwt:
+      # Secret should be injected via environment variable
+      secret: ${JWT_SECRET}
+      expiration: 3600000 # 1 hour
+      issuer: nexus-production
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+        - OPTIONS
+      allowed-headers:
+        - "*"
+      allow-credentials: true
+
+# Logging - JSON format for Cloud Foundry
+logging:
+  level:
+    root: INFO
+    com.baskettecase.nexus: INFO
+    org.springframework.security: WARN
+    org.springframework.ai.mcp: INFO
+
+# Management
+management:
+  endpoint:
+    health:
+      show-details: when-authorized

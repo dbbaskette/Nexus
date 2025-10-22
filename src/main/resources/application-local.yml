@@ -1,0 +1,68 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nexus
+    username: nexus
+    password: nexus
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+
+  # MCP Client Configuration
+  ai:
+    mcp:
+      client:
+        enabled: true
+        type: SYNC
+        request-timeout: 30s
+        # Server connections will be configured dynamically via UI/API
+        # Example static configuration:
+        # sse:
+        #   connections:
+        #     weather-server:
+        #       url: http://localhost:8081/mcp
+
+# Security - Local Development (relaxed)
+nexus:
+  security:
+    jwt:
+      secret: dev-secret-key-change-in-production-min-256-bits-required-for-hs256
+      expiration: 86400000 # 24 hours
+      issuer: nexus-local
+    cors:
+      allowed-origins:
+        - http://localhost:5173
+        - http://localhost:8080
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+        - OPTIONS
+      allowed-headers:
+        - "*"
+      allow-credentials: true
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.baskettecase.nexus: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.ai.mcp: TRACE
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# Management
+management:
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: nexus-mcp-gateway
+
+  profiles:
+    active: local
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: true
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+# Server Configuration
+server:
+  port: 8080
+  error:
+    include-message: true
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: false
+
+# Management & Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when-authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0
+
+# API Documentation
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  show-actuator: true
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.baskettecase.nexus: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.ai: DEBUG
+  pattern:
+    correlation: "[${spring.application.name},%X{traceId:-},%X{spanId:-}]"

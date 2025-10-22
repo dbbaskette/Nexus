@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)"
+    ]
+  },
+  "project": {
+    "buildTool": "maven",
+    "springBootVersion": "3.5.6"
+  }
+}

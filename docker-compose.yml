@@ -1,0 +1,78 @@
+services:
+  # Weather MCP Server (SSE/HTTP transport)
+  mcp-weather:
+    build:
+      context: ./docker/fixtures/weather
+      args:
+        SPRING_AI_EXAMPLES_REF: main
+    image: local/mcp-fixture-weather:latest
+    container_name: nexus-mcp-weather
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVER_PORT=8081
+      - SPRING_PROFILES_ACTIVE=default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - nexus-network
+
+  # Filesystem MCP Server (SSE/HTTP transport)
+  mcp-filesystem:
+    build:
+      context: ./docker/fixtures/filesystem
+      args:
+        SPRING_AI_EXAMPLES_REF: main
+    image: local/mcp-fixture-filesystem:latest
+    container_name: nexus-mcp-filesystem
+    ports:
+      - "8082:8082"
+    environment:
+      - SERVER_PORT=8082
+      - SPRING_PROFILES_ACTIVE=default
+    volumes:
+      - filesystem-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - nexus-network
+
+  # SQLite MCP Server (SSE/HTTP transport)
+  mcp-sqlite:
+    build:
+      context: ./docker/fixtures/sqlite
+      args:
+        SPRING_AI_EXAMPLES_REF: main
+    image: local/mcp-fixture-sqlite:latest
+    container_name: nexus-mcp-sqlite
+    ports:
+      - "8083:8083"
+    environment:
+      - SERVER_PORT=8083
+      - SPRING_PROFILES_ACTIVE=default
+    volumes:
+      - sqlite-data:/data/db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - nexus-network
+
+networks:
+  nexus-network:
+    driver: bridge
+
+volumes:
+  filesystem-data:
+  sqlite-data:
