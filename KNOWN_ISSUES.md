@@ -1,5 +1,21 @@
 # Known Issues & Workarounds
 
+## ✅ Resolved Issues
+
+### Spring Boot 3.x Error Property Configuration
+**Status**: ✅ Fixed in latest commit
+
+**Problem**: Application failed to start with:
+```
+Failed to bind properties under 'server.error.include-message' to ErrorProperties$IncludeAttribute
+```
+
+**Solution**: Changed from boolean `true` to enum value `always` in `application.yml`.
+
+Spring Boot 3.x requires one of: `ALWAYS`, `NEVER`, or `ON_PARAM`.
+
+---
+
 ## NPM Registry Connection Issues
 
 ### Problem
